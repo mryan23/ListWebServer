@@ -28,55 +28,6 @@ public class ListServlet extends HttpServlet {
 	Gson gson = new Gson();
 
 	public ListServlet() {
-		/*l = new List();
-		l.setName("List 1");
-		l.setUser("mryan23");
-		ListObject[] items = new ListObject[4];
-		ListObject item0 = new ListObject();
-		item0.setName("Item0");
-		items[0] = item0;
-		ListObject item1 = new ListObject();
-		item1.setName("Item1");
-		ListObject subItem10 = new ListObject();
-		subItem10.setName("SubItem10");
-		ListObject subItem11 = new ListObject();
-		subItem11.setName("SubItem11");
-		ListObject[] subItems = { subItem10, subItem11 };
-		item1.setItems(subItems);
-		item1.setCompleted(true);
-		items[1] = item1;
-		l.setItems(items);
-		ListObject item2 = new ListObject();
-		item2.setName("Item2");
-		item2.setDeleted(true);
-		items[2] = item2;
-		ListObject item3 = new ListObject();
-		item3.setName("Item3");
-		items[3] = item3;
-
-		Connection c = null;
-		Statement stmt = null;
-		try {
-			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:test.db");
-			System.out.println("Opened database successfully");
-
-			stmt = c.createStatement();
-			String sql = "INSERT INTO LISTS (NAME, USER,FILE) VALUES ('LIST 1','mryan23','list1_mryan23.json')";
-			stmt.executeUpdate(sql);
-
-			writeListToFile(l, "list1_mryan23.json");
-
-			ResultSet rs = stmt.executeQuery("SELECT NAME FROM LISTS WHERE 1");
-			while (rs.next()) {
-				System.out.println(rs.getString("NAME"));
-			}
-			stmt.close();
-			c.close();
-		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			// System.exit(0);
-		}*/
 
 	}
 
@@ -91,7 +42,6 @@ public class ListServlet extends HttpServlet {
 		String nameString = req.getParameter("name");
 		String newList = req.getParameter("new");
 		boolean newListBool = Boolean.parseBoolean(newList);
-		System.out.println("ID String:" + idString);
 		if (idString != null) {
 			int id = Integer.parseInt(idString);
 			List list = getList(id);
@@ -123,7 +73,6 @@ public class ListServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		if (!req.getContentType().toLowerCase().equals("application/json")) {
-			System.out.println(req.getContentType());
 			throw new IOException();
 		}
 		InputStream body = req.getInputStream();
@@ -134,7 +83,6 @@ public class ListServlet extends HttpServlet {
 		}
 		s.close();
 
-		System.out.println("POSTED");
 		String data = buf.toString();
 		List list = gson.fromJson(data, List.class);
 		insertList(list);
@@ -148,10 +96,8 @@ public class ListServlet extends HttpServlet {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:test.db");
-			System.out.println("Opened database successfully");
 			stmt = c.createStatement();
 
-			System.out.println(query);
 			ResultSet rs = stmt.executeQuery(query);
 			int count = 0;
 			String fileName = null;
@@ -184,10 +130,8 @@ public class ListServlet extends HttpServlet {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:test.db");
-			System.out.println("Opened database successfully");
 			stmt = c.createStatement();
 
-			System.out.println(query);
 			ResultSet rs = stmt.executeQuery(query);
 			int count = 0;
 			String fileName = null;
@@ -199,14 +143,11 @@ public class ListServlet extends HttpServlet {
 			}
 			if (count > 0) {
 				// EXISTS
-				System.out.println("EXISTSSSSSS");
 				writeListToFile(list, fileName);
 				String update ="UPDATE LISTS SET NAME='"+list.getName()+"' WHERE ID="+list.getId();
-				System.out.println(update);
 				stmt.executeUpdate(update);
 			} else {
-				// NEW
-				System.out.println("NEW THINGYYYY");
+				//NEW
 				fileName = list.getName() + "_" + list.getUser() + ".json";
 				fileName = fileName.toLowerCase().replace(" ", "");
 				query = "INSERT INTO LISTS (NAME, USER, FILE) VALUES ('"
@@ -224,13 +165,11 @@ public class ListServlet extends HttpServlet {
 	}
 	public int getId(List list){
 		String query = "SELECT ID FROM LISTS WHERE NAME ='" + list.getName()+"' AND USER='"+list.getUser()+"'";
-		System.out.println("QUERY:"+query);
 		Connection c = null;
 		Statement stmt = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:test.db");
-			System.out.println("Opened database successfully");
 			stmt = c.createStatement();
 
 			ResultSet rs = stmt.executeQuery(query);
@@ -277,7 +216,6 @@ public class ListServlet extends HttpServlet {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:test.db");
-			System.out.println("Opened database successfully");
 
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -294,7 +232,6 @@ public class ListServlet extends HttpServlet {
 					sb.append("\n");
 					line = br.readLine();
 				}
-				System.out.println(sb.toString());
 				result = gson.fromJson(sb.toString(), List.class);
 			}
 			stmt.close();
@@ -315,7 +252,6 @@ public class ListServlet extends HttpServlet {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection("jdbc:sqlite:test.db");
-			System.out.println("Opened database successfully");
 
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
